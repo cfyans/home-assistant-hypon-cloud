@@ -34,6 +34,7 @@ options:
   mqtt_apply_on_change: false
   mqtt_sync_from_hypon: true
   mqtt_sync_interval: 7200
+  inverter_refresh_interval: 3600
 schema:
   username: str
   password: password
@@ -52,3 +53,4 @@ schema:
   mqtt_apply_on_change: bool
   mqtt_sync_from_hypon: bool
   mqtt_sync_interval: int(60,86400)
+  inverter_refresh_interval: int(300,86400)
