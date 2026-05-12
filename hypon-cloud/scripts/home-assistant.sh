@@ -59,7 +59,7 @@ function update-sensor {
     local sensor_value=${2}
     local sensor_name=${3}
     bashio::log.info "Updating sensor $sensor_name with value $sensor_value"
-    data=$(echo "$sensor_template" | jq .state="$sensor_value")
+    data=$(echo "$sensor_template" | jq --arg val "$sensor_value" '.state = $val')
     if ! response=$(ha-post-sensor "$data" "$sensor_name"); then
         bashio::log.error "Unable to update sensor $sensor_name in Home Assistant"
     fi
