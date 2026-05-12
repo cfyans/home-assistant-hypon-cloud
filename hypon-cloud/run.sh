@@ -73,6 +73,8 @@ loadSensorData() {
       update-sensor "$BATTERY_SOC_TEMPLATE" "$(echo "$realTimeData" | jq -r '.data.soc // "unknown"')" "$BATTERY_SOC_SENSOR_NAME"
       update-sensor "$MICRO_POWER_TEMPLATE" "$(echo "$realTimeData" | jq -r '.data.micro')" "$MICRO_POWER_SENSOR_NAME"
       update-sensor "$SELF_CONSUMPTION_PERCENT_TEMPLATE" "$(echo "$realTimeData" | jq -r '.data.percent')" "$SELF_CONSUMPTION_PERCENT_SENSOR_NAME"
+      update-sensor "$GRID_EXPORT_NOW_TEMPLATE" "$(echo "$realTimeData" | jq -r '[0 - .data.meter_power, 0] | max')" "$GRID_EXPORT_NOW_SENSOR_NAME"
+      update-sensor "$GRID_IMPORT_NOW_TEMPLATE" "$(echo "$realTimeData" | jq -r '[.data.meter_power, 0] | max')" "$GRID_IMPORT_NOW_SENSOR_NAME"
 
       # --- Generation Tracking Sensors (from /monitor) ---
       bashio::log.info "Updating Generation Tracking Sensors"

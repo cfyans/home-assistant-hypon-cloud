@@ -36,6 +36,8 @@ declare BATTERY_POWER_NOW_SENSOR_NAME="sensor.hypon_battery_power_now"
 declare BATTERY_SOC_SENSOR_NAME="sensor.hypon_battery_soc"
 declare MICRO_POWER_SENSOR_NAME="sensor.hypon_micro_power"
 declare SELF_CONSUMPTION_PERCENT_SENSOR_NAME="sensor.hypon_self_consumption_percent"
+declare GRID_EXPORT_NOW_SENSOR_NAME="sensor.hypon_grid_export_now"
+declare GRID_IMPORT_NOW_SENSOR_NAME="sensor.hypon_grid_import_now"
 
 declare PV_POWER_NOW_TEMPLATE='{"state": "unknown", "attributes": {"unique_id": "hypon_cloud_pv_power_now", "state_class": "measurement", "unit_of_measurement": "W", "device_class": "power", "friendly_name": "PV Power Now"}}'
 declare GRID_POWER_NOW_TEMPLATE='{"state": "unknown", "attributes": {"unique_id": "hypon_cloud_grid_power_now", "state_class": "measurement", "unit_of_measurement": "W", "device_class": "power", "friendly_name": "Grid Power Now"}}'
@@ -44,6 +46,8 @@ declare BATTERY_POWER_NOW_TEMPLATE='{"state": "unknown", "attributes": {"unique_
 declare BATTERY_SOC_TEMPLATE='{"state": "unknown", "attributes": {"unique_id": "hypon_cloud_battery_soc", "state_class": "measurement", "unit_of_measurement": "%", "device_class": "battery", "friendly_name": "Battery State of Charge"}}'
 declare MICRO_POWER_TEMPLATE='{"state": "unknown", "attributes": {"unique_id": "hypon_cloud_micro_power", "state_class": "measurement", "unit_of_measurement": "W", "device_class": "power", "friendly_name": "Micro Power"}}'
 declare SELF_CONSUMPTION_PERCENT_TEMPLATE='{"state": "unknown", "attributes": {"unique_id": "hypon_cloud_self_consumption_percent", "state_class": "measurement", "unit_of_measurement": "%", "friendly_name": "Self Consumption Percent"}}'
+declare GRID_EXPORT_NOW_TEMPLATE='{"state": "unknown", "attributes": {"unique_id": "hypon_cloud_grid_export_now", "state_class": "measurement", "unit_of_measurement": "W", "device_class": "power", "friendly_name": "Grid Export Now"}}'
+declare GRID_IMPORT_NOW_TEMPLATE='{"state": "unknown", "attributes": {"unique_id": "hypon_cloud_grid_import_now", "state_class": "measurement", "unit_of_measurement": "W", "device_class": "power", "friendly_name": "Grid Import Now"}}'
 
 # --------------------------------------------------------------------------
 # Generation Tracking Sensors (from /plant/{id}/monitor)
