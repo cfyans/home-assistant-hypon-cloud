@@ -1,6 +1,6 @@
 name: "Hypon Cloud"
 description: "Integrate Hypon Cloud with Home Assistant"
-url: "https://github.com/amckee23/home-assistant-hypon-cloud"
+url: "https://github.com/cfyans/home-assistant-hypon-cloud"
 version: "1.3.4"
 slug: "hypon_cloud_integration"
 arch:
