@@ -3,6 +3,7 @@
 source scripts/home-assistant.sh
 source scripts/hypon.sh
 source scripts/mqtt.sh
+source scripts/sanity.sh
 source scripts/variables.sh
 
 loadSensorData() {
@@ -53,15 +54,15 @@ loadSensorData() {
 
       # --- Daily Energy Sensors (from /energy2) ---
       bashio::log.info "Updating Daily Energy Sensors"
-      update-sensor "$INVERTER_AC_OUT_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.kwhac')" "$INVERTER_AC_OUT_TODAY_SENSOR_NAME"
-      update-sensor "$TOTAL_ENERGY_USED_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.load')" "$TOTAL_ENERGY_USED_TODAY_SENSOR_NAME"
-      update-sensor "$BATTERY_USED_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.load_from_bat')" "$BATTERY_USED_TODAY_SENSOR_NAME"
-      update-sensor "$GRID_USED_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.load_from_grid')" "$GRID_USED_TODAY_SENSOR_NAME"
-      update-sensor "$PV_USED_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.load_from_pv')" "$PV_USED_TODAY_SENSOR_NAME"
-      update-sensor "$TOTAL_PV_GENERATED_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.pvkwh')" "$TOTAL_PV_GENERATED_TODAY_SENSOR_NAME"
-      update-sensor "$PV_TO_BATTERY_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.pv_to_bat')" "$PV_TO_BATTERY_TODAY_SENSOR_NAME"
-      update-sensor "$PV_TO_GRID_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.pv_to_grid')" "$PV_TO_GRID_TODAY_SENSOR_NAME"
-      update-sensor "$PV_TO_LOAD_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.pv_to_load')" "$PV_TO_LOAD_TODAY_SENSOR_NAME"
+      update-daily-total-sensor "$INVERTER_AC_OUT_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.kwhac')" "$INVERTER_AC_OUT_TODAY_SENSOR_NAME"
+      update-daily-total-sensor "$TOTAL_ENERGY_USED_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.load')" "$TOTAL_ENERGY_USED_TODAY_SENSOR_NAME"
+      update-daily-total-sensor "$BATTERY_USED_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.load_from_bat')" "$BATTERY_USED_TODAY_SENSOR_NAME"
+      update-daily-total-sensor "$GRID_USED_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.load_from_grid')" "$GRID_USED_TODAY_SENSOR_NAME"
+      update-daily-total-sensor "$PV_USED_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.load_from_pv')" "$PV_USED_TODAY_SENSOR_NAME"
+      update-daily-total-sensor "$TOTAL_PV_GENERATED_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.pvkwh')" "$TOTAL_PV_GENERATED_TODAY_SENSOR_NAME"
+      update-daily-total-sensor "$PV_TO_BATTERY_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.pv_to_bat')" "$PV_TO_BATTERY_TODAY_SENSOR_NAME"
+      update-daily-total-sensor "$PV_TO_GRID_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.pv_to_grid')" "$PV_TO_GRID_TODAY_SENSOR_NAME"
+      update-daily-total-sensor "$PV_TO_LOAD_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.pv_to_load')" "$PV_TO_LOAD_TODAY_SENSOR_NAME"
       update-sensor "$ENERGY_BALANCE_TODAY_TEMPLATE" "$(echo "$solarData" | jq -r '.data.balance')" "$ENERGY_BALANCE_TODAY_SENSOR_NAME"
 
       # --- Real-time Power Sensors (from /monitor) ---
@@ -78,7 +79,7 @@ loadSensorData() {
 
       # --- Generation Tracking Sensors (from /monitor) ---
       bashio::log.info "Updating Generation Tracking Sensors"
-      update-sensor "$PV_GENERATION_TODAY_TEMPLATE" "$(echo "$realTimeData" | jq -r '.data.e_today')" "$PV_GENERATION_TODAY_SENSOR_NAME"
+      update-daily-total-sensor "$PV_GENERATION_TODAY_TEMPLATE" "$(echo "$realTimeData" | jq -r '.data.e_today')" "$PV_GENERATION_TODAY_SENSOR_NAME"
       update-sensor "$PV_GENERATION_MONTH_TEMPLATE" "$(echo "$realTimeData" | jq -r '.data.e_month')" "$PV_GENERATION_MONTH_SENSOR_NAME"
       update-sensor "$PV_GENERATION_YEAR_TEMPLATE" "$(echo "$realTimeData" | jq -r '.data.e_year')" "$PV_GENERATION_YEAR_SENSOR_NAME"
       update-sensor "$PV_GENERATION_TOTAL_TEMPLATE" "$(echo "$realTimeData" | jq -r '.data.e_total')" "$PV_GENERATION_TOTAL_SENSOR_NAME"
@@ -104,7 +105,7 @@ loadSensorData() {
 
         if echo "$inverterData" | jq -e '.data[0]' >/dev/null 2>&1; then
           update-sensor "$INVERTER_POWER_TEMPLATE" "$(echo "$inverterData" | jq -r '.data[0].power')" "$INVERTER_POWER_SENSOR_NAME"
-          update-sensor "$INVERTER_E_TODAY_TEMPLATE" "$(echo "$inverterData" | jq -r '.data[0].e_today')" "$INVERTER_E_TODAY_SENSOR_NAME"
+          update-daily-total-sensor "$INVERTER_E_TODAY_TEMPLATE" "$(echo "$inverterData" | jq -r '.data[0].e_today')" "$INVERTER_E_TODAY_SENSOR_NAME"
           update-sensor "$INVERTER_E_TOTAL_TEMPLATE" "$(echo "$inverterData" | jq -r '.data[0].e_total')" "$INVERTER_E_TOTAL_SENSOR_NAME"
           update-sensor "$INVERTER_STATUS_TEMPLATE" "$(echo "$inverterData" | jq -r '.data[0].status')" "$INVERTER_STATUS_SENSOR_NAME"
           update-sensor "$INVERTER_MODEL_TEMPLATE" "$(echo "$inverterData" | jq -r '.data[0].model')" "$INVERTER_MODEL_SENSOR_NAME"

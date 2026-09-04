@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.2.0
+- Added sanity guards for corrupt readings from the Hypon API (`scripts/sanity.sh`)
+- Rejected any numeric reading of magnitude 1e9 or greater, on every sensor
+- Held daily `total_increasing` energy sensors at their last good value when the API returns a lower mid-day figure, so downward decay is no longer counted as a counter reset
+- Capped daily energy readings at 200 kWh
+
+## 2.1.0
+- Added separate grid import/export real-time sensors
+
+## 2.0.0
+- Expanded sensors to 33, added stability fixes and tiered refresh
+- Fixed jq crash on string sensor values like inverter status
+- Added `build.yaml` so the add-on builds (upstream issue #21)
+
 ## 1.3.4
 - Changed default MQTT inverter sync interval to `7200` seconds (120 minutes)
 - Added MQTT `0 Sync Status` sensor updates during periodic `TimeMode1..4` polling

@@ -58,6 +58,15 @@ function update-sensor {
     local sensor_template=${1}
     local sensor_value=${2}
     local sensor_name=${3}
+
+    # Backstop against corrupt numbers from the Hypon API. Non-numeric values
+    # are left alone; the status, model and warning sensors are strings.
+    if is-numeric "$sensor_value" \
+        && num-gt "${sensor_value#-}" "$SENSOR_ABSURD_MAGNITUDE"; then
+        bashio::log.error "Rejecting corrupt value $sensor_value for $sensor_name (magnitude >= ${SENSOR_ABSURD_MAGNITUDE})"
+        return 0
+    fi
+
     bashio::log.info "Updating sensor $sensor_name with value $sensor_value"
     data=$(echo "$sensor_template" | jq --arg val "$sensor_value" '.state = $val')
     if ! response=$(ha-post-sensor "$data" "$sensor_name"); then
