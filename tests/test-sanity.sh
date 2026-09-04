@@ -87,6 +87,22 @@ replay "45 kWh summer day not clipped" \
   "0 12.5 45.9" \
   0 12.5 45.9
 
+# 14 Aug: a genuine mid-day counter restart. The counter reached 9.99 kWh by
+# 13:00, restarted, then climbed to 8.75 kWh by midnight; 18.74 kWh really was
+# generated. The restart must be let through in full. A fixed kWh floor pinned
+# the sensor at 9.99 here and lost the whole afternoon.
+replay "14 Aug 2026 mid-day counter restart passes through" \
+  "0 0.06 0.37 1.27 2.93 6.45 9.99 1.5 2.57 3.98 5.12 6.09 6.86 7.65 8.49 8.69 8.73 8.75" \
+  0 0.06 0.37 1.27 2.93 6.45 9.99 1.5 2.57 3.98 5.12 6.09 6.86 7.65 8.49 8.69 8.73 8.75
+
+# Either side of the 20% reset fraction, against a held value of 10.
+replay "drop to 1.9 kWh from 10 reads as a restart" \
+  "10 1.9 3.4" \
+  10 1.9 3.4
+replay "drop to 2.5 kWh from 10 reads as decay and is held" \
+  "10 11.2" \
+  10 2.5 2.6 2.4 11.2
+
 # Backstop on sensors that do not go through the daily guard.
 reset-capture
 update-sensor "$TPL" "387929941747.78" sensor.hypon_pv_generation_total

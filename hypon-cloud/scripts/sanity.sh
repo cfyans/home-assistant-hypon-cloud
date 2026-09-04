@@ -25,9 +25,19 @@ declare SENSOR_ABSURD_MAGNITUDE=1000000000
 # ~36 kWh; the cap is deliberately loose so it only ever catches corruption.
 declare DAILY_TOTAL_MAX_KWH=200
 
-# A daily counter may only fall when it genuinely rolls over. Treat a drop to at
-# or below this as a real reset and anything else as API noise.
-declare DAILY_TOTAL_RESET_CEILING=0.2
+# A daily counter may only fall when it genuinely resets. Distinguishing a real
+# reset from the decay glitch has to be relative, not a fixed kWh floor: the
+# counter can legitimately restart part-way through a day at a non-trivial
+# value. On 2026-08-14 it reached 9.99 kWh by 13:00, restarted, and climbed to
+# 8.75 kWh by midnight - 18.74 kWh really was generated, and a fixed floor would
+# have pinned the sensor at 9.99 for the rest of the day.
+#
+# A drop to at or below this fraction of the last good value is a reset;
+# anything shallower is the decay glitch. The deepest decay seen so far retained
+# 27% (31 Aug: 2.7 -> 0.73), and 30 Aug retained 32% (3.3 -> 1.06), so 0.2
+# suppresses both with room to spare while still accepting a restart landing
+# anywhere below a fifth of the running total.
+declare DAILY_TOTAL_RESET_FRACTION=0.2
 
 # Last value published per sensor, and the day it belongs to.
 declare -A LAST_ACCEPTED_VALUE
@@ -55,6 +65,19 @@ function num-lt {
 
 function num-gt {
     awk -v a="${1}" -v b="${2}" 'BEGIN { exit !(a > b) }'
+}
+
+# ------------------------------------------------------------------------------
+# True when a fall from the last good value is deep enough to be a genuine
+# counter reset rather than the decay glitch.
+#
+# Arguments
+#  $1 The new value
+#  $2 The last accepted value
+#  $3 The reset fraction
+# ------------------------------------------------------------------------------
+function is-counter-reset {
+    awk -v new="${1}" -v last="${2}" -v frac="${3}" 'BEGIN { exit !(new <= last * frac) }'
 }
 
 # ------------------------------------------------------------------------------
@@ -94,11 +117,11 @@ function update-daily-total-sensor {
         LAST_ACCEPTED_DAY[$sensor_name]=$today
     fi
 
-    # A mid-day drop to a non-zero value is the decay glitch, not a reset.
+    # A shallow mid-day drop is the decay glitch, not a reset.
     last_value=${LAST_ACCEPTED_VALUE[$sensor_name]:-}
     if [ -n "$last_value" ] \
         && num-lt "$sensor_value" "$last_value" \
-        && num-gt "$sensor_value" "$DAILY_TOTAL_RESET_CEILING"; then
+        && ! is-counter-reset "$sensor_value" "$last_value" "$DAILY_TOTAL_RESET_FRACTION"; then
         bashio::log.warning "Holding $sensor_name at $last_value, API returned lower value $sensor_value mid-day"
         return 0
     fi

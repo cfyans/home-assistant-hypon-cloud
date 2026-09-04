@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.1
+- Detect a daily counter reset by relative depth (a drop to 20% or less of the last good value) instead of a fixed 0.2 kWh floor
+- Fixed the fixed-floor case where a genuine mid-day counter restart pinned the sensor for the rest of the day and lost the afternoon's generation
+
 ## 2.2.0
 - Added sanity guards for corrupt readings from the Hypon API (`scripts/sanity.sh`)
 - Rejected any numeric reading of magnitude 1e9 or greater, on every sensor

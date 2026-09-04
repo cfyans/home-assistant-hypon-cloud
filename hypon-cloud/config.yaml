@@ -1,7 +1,7 @@
 name: "Hypon Cloud"
 description: "Integrate Hypon Cloud with Home Assistant"
 url: "https://github.com/cfyans/home-assistant-hypon-cloud"
-version: "2.2.0"
+version: "2.2.1"
 slug: "hypon_cloud_integration"
 arch:
   - armhf
